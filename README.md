@@ -280,7 +280,9 @@ so let's pick one without thinking about it too much for now
 //...
 ```
 
-that was easy lol. Now we can have the computer play the move, and we'll have programmed the worst computer player in history (quickly though!)
+that was easy lol.
+
+Now as soon as we have the computer play the move,  we'll have programmed the worst computer player in history (quickly though!)
 
 
 
