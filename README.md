@@ -333,7 +333,7 @@ we can wait half a second before reviewing how the `calculatePiecesAfterMove` fu
 
     const { turnOver, pieces } = calculatePiecesAfterMove(this.state.pieces, cpMove);
 
-    setTimeout(()=> this.setState({ pieces, turn: turnOver? 'p1' : 'p2' }, 500);
+    setTimeout(()=> this.setState({ pieces, turn: turnOver? 'p1' : 'p2' }), 500);
   }
 
 //...
@@ -386,16 +386,18 @@ if the turn isn't over, we should probably keep moving!
         cpMove.slice(1)
       );
 
-      setTimeout(()=> this.setState({ pieces: nextPieces, turn: nextTurnOver? 'p1' : 'p2' }, 1000);
+      setTimeout(()=> this.setState({ pieces: nextPieces, turn: nextTurnOver? 'p1' : 'p2' }), 1000);
     }
 //...
 ```
 
 [js array's built in .slice function](https://www.google.com/search?q=mdn+js+array+slice) is a shining star here
 
-of course, the next move could still not be the end of the turn... anyone who wants to write this as a `do...while` loop is welcome to try! (javascript kept the syntax just for you)
+this will allow the computer to make at least double-jumps.
 
-copy-pasting this logic repeatedly will also work (I did that, so I know it'll work for sure)
+of course, the double jump move could still not be the end of the turn... anyone who wants to write this as a `do...while` loop is welcome to try! (javascript kept the syntax just for you)
+
+copy-pasting this logic repeatedly will also give the computer the ability to make repeated jumps (I did that, so I know it'll work for sure)
 
 
 
@@ -488,7 +490,7 @@ let's use our trusty `.map` and `.reduce` to compute the board-situation after e
       moves.reduce((p, move, mi)=> calculatePiecesAfterMove(p, [
         ...moves.slice(mi),
         mi === moves.length -1 ? moves[mi] : undefined,
-      ]).pieces, pieces)
+      ]).pieces, this.state.pieces)
     );
 
 ```
@@ -496,6 +498,9 @@ let's use our trusty `.map` and `.reduce` to compute the board-situation after e
 
 <sub>./src/Game.js</sub>
 ```js
+    const player = this.state.turn;
+    const otherPlayer = { p1: 'p2', p2: 'p1' }[player];
+
     const moveValues = moveResults.map(resultPieces => {
       const playerPieces = resultPieces.reduce((p, col)=>
         p+ col.filter(piece => (piece && piece === player)).length, 0);
@@ -526,10 +531,11 @@ let's use our trusty `.map` and `.reduce` to compute the board-situation after e
 
 #### pick the best one
 
+<sub>./src/Game.js</sub>
 ```js
     const bestMove = moveValues.reduce((moveIndex, result, ci)=> (result > moveValues[moveIndex] ? ci : moveIndex), 0);
     
-    return allMoves[ bestMove ]; // pick the best move by the formula
+    const cpMove = allMoves[ bestMove ]; // pick the best move by the formula
 ```
 
 
