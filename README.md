@@ -426,7 +426,7 @@ these are the tools you'll need to succeed.
 
 ### improving decision
 
-ok, we got the computer player moving his pieces around. However, he's a horrendous player! Let's get back to the top of the `makeCPMove` function and write some better decision logic.
+ok, we got the computer player moving his pieces around. However, he's a horrendous player! Let's get back to the top of the `makeCPmove` function and write some better decision logic.
 
 <sub>./src/Game.js</sub>
 ```js
