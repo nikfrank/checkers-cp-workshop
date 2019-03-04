@@ -255,6 +255,11 @@ I found it very useful while writing this game to read through a few options to 
 making the decision should be pretty easy once we can imagine all the moves from the output turn-move-arrays
 
 
+in order to see some multijump scenarios, I've included `jumpyCheckersBoard` as an export from <sub>./src/util.js</sub>
+
+by replacing the initial pieces in `state` in `Game` with the jumpy board, you'll be able to review multijump arrays
+
+
 #### pick one randomly
 
 our first goal will just be to program the computer to play a move for our user to play against
