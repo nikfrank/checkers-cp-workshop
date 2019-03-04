@@ -20,6 +20,7 @@ We're starting today from a 2p-local game, out goal is to add a basic computer p
   - pick one randomly
 - move pieces on board
   - delay move for UX
+  - calculating mid-move
   - playing multijumps
   - delay multijumps for UX
   - terminating infinite king jumps
@@ -338,7 +339,10 @@ we can wait half a second before reviewing how the `calculatePiecesAfterMove` fu
 //...
 ```
 
-okay, we're passing the `pieces` in, which makes sense given the function's signature
+
+#### calculating mid-move
+
+we're passing the `pieces` in, which makes sense given the function's signature
 
 what's happening to our `cpMove` when we have more than one move?
 
