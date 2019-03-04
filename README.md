@@ -229,6 +229,13 @@ we have a function for this! Let's call it and see what we get back from it
 ```js
 //...
 
+import {
+  calculateAllTurnOptions,
+  //...
+} from './util';
+
+//...
+
   makeCPmove = ()=>{
     // here we'll calculate available moves, evaluate them, and choose one.
     const allMoves = calculateAllTurnOptions(this.state.pieces, this.state.turn);
