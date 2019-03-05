@@ -336,8 +336,6 @@ this will let us make single moves, and does so jarringly quickly
 
 let's have the computer player wait half a second before moving his piece
 
-then we'll review how the `calculatePiecesAfterMove` function is working
-
 <sub>./src/Game.js</sub>
 ```js
 //...
@@ -357,6 +355,10 @@ then we'll review how the `calculatePiecesAfterMove` function is working
 
 //...
 ```
+
+now that the UX is a bit better on the cp moves let's review how the `calculatePiecesAfterMove` function is working
+
+we need to fix a bug that the computer isn't able to do double jumps!
 
 
 #### calculating mid-move
