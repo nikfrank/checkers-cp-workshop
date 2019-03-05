@@ -334,7 +334,9 @@ this will let us make single moves, and does so jarringly quickly
 
 #### delay move for UX
 
-we can wait half a second before reviewing how the `calculatePiecesAfterMove` function is working
+let's have the computer player wait wait half a second before moving his piece
+
+then we'll review how the `calculatePiecesAfterMove` function is working
 
 <sub>./src/Game.js</sub>
 ```js
