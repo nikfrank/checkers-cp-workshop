@@ -4,10 +4,16 @@ We're starting today from a 2p-local game, out goal is to add a basic computer p
 
 ## getting started
 
+let's clone the project and run the existing checkers game
+
 `$ cd ~/code`
+
 `$ git clone https://github.com/nikfrank/checkers-cp-workshop`
+
 `$ cd checkers-cp-workshop`
+
 `$ yarn`
+
 `$ npm start`
 
 
