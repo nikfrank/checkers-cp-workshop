@@ -527,7 +527,7 @@ let's use our trusty `.map` and `.reduce` to compute the board-situation after e
         p+ col.filter(piece => (piece && piece === player)).length, 0);
       
       const playerKings = resultPieces.reduce((p, col)=>
-        p+ col.filter(piece => (piece && piece === player+'king')).length, 0);
+        p+ col.filter(piece => (piece && piece === player+'-king')).length, 0);
       
       const playerEdges = resultPieces.reduce((p, col, ci)=> p+ (ci > 0 && ci < resultPieces.length-1) ? (
         0 ) : ( col.filter(piece=> (piece && piece.includes(player))).length ), 0);
