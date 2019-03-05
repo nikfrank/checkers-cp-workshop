@@ -379,7 +379,7 @@ export const calculatePiecesAfterMove = (inputPieces, [moveFrom, moveTo])=>{
 
 those `[]` square brackets are [destructuring](https://www.google.com/search?q=array+argument+destructuring) the input argument
 
-what happens when our `cpMove` is longer than two (from, to), is the extra entries in the array will be ignored.
+so what happens when our `cpMove` is longer than two [from, to]? the extra entries in the array will be ignored.
 
 that's good, but we're going to want to make those moves too!
 
