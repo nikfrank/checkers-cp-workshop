@@ -334,7 +334,7 @@ this will let us make single moves, and does so jarringly quickly
 
 #### delay move for UX
 
-let's have the computer player wait wait half a second before moving his piece
+let's have the computer player wait half a second before moving his piece
 
 then we'll review how the `calculatePiecesAfterMove` function is working
 
