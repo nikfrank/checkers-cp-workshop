@@ -162,7 +162,7 @@ How are we going to respond to p1 moving?
 ### didUpdate lifecycle -> trigger cp play
 
 
-Let's start by thinking through what happends when p1 does move:
+Let's start by thinking through what happens when p1 does move:
 
 - user clicks a square to move to
 - eventually the turn is determined to be over by the `calculatePiecesAfterMove` function during
