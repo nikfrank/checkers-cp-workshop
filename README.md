@@ -186,7 +186,6 @@ when the `state` updates, React will call a number of [lifecycle functions](http
 
 based on the example in the docs, we'll be able to run code whenever some `state` or `props` value changes...
 
-(( joke ))
 
 here we'll check that `this.state.turn` is `'p2'` and `prevState.turn` isn't, which means our computer player should pick his move!
 
@@ -691,7 +690,22 @@ all we need to do is run
 
 `$ npm run test -- --coverage`
 
+or
 
+`$ yarn test --coverage` for the cool kids
+
+
+now you'll be able to get the report [in chrome file browsing](file:///home/nik/code/ai-checkers/coverage/lcov-report/index.html)
+
+(that link is for my computer... you'll have to replace the `/home/nik/code` with whatever your `$ cd ~/code && pwd` returns)
+
+(alternatively, you can run `$ google-chrome ./coverage/lcov-report` from the command line, and chrome will open to the report)
+
+
+we can now see which lines of code in each file are covered!
+
+
+//...
 
 - read utility functions, refactor them for legibility
 - test the entire 2p local flow
