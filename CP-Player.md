@@ -325,3 +325,131 @@ writing a minimax algorithm
 - select a move
 
 
+
+
+
+
+
+
+
+###
+###
+###
+
+code blocks
+
+```js
+  componentDidMount(){
+    (Math.random() > 0.5) && setTimeout(()=> this.setState({ turn: 'p2' }), 100);
+  }
+  
+  componentDidUpdate(prevProps, prevState){
+    if(
+      ( this.props.mode === 'cp' && this.state.turn === 'p2' ) &&
+      ( prevState.turn !== 'p2' )
+    ) this.makeCPmove();
+  }
+
+  makeCPmove = ()=>{
+    const cpMove = this.props.cpMove(this.state.pieces);
+
+    if(!cpMove) return;
+    
+    const { turnOver, pieces } = calculatePiecesAfterMove(this.state.pieces, cpMove);
+
+    // if turn is over, delay 500ms -> setState({ turn: 'p1', pieces: nextPieces })
+    setTimeout(()=> this.setState({ pieces, turn: turnOver? 'p1' : 'p2' }, ()=> turnOver && this.checkEndGame()), 500);
+
+    if(!turnOver) {
+      const { turnOver: nextTurnOver, pieces: nextPieces } = calculatePiecesAfterMove(
+        pieces,
+        cpMove.slice(1)
+      );
+
+      setTimeout(()=> this.setState({ pieces: nextPieces, turn: nextTurnOver? 'p1' : 'p2' },
+                                    ()=> nextTurnOver && this.checkEndGame()), 1100);
+
+      if( !nextTurnOver ){
+        const { pieces: lastPieces, turnOver: kingNotStillJumping } = calculatePiecesAfterMove(
+          nextPieces,
+          cpMove.slice(2)
+        );
+
+        if( kingNotStillJumping )
+          setTimeout(()=> this.setState({ pieces: lastPieces, turn: 'p1' },
+                                        ()=> nextTurnOver && this.checkEndGame()), 1600);
+        else {
+          const { pieces: endKingPieces } = calculatePiecesAfterMove( lastPieces, [cpMove[2], cpMove[2]] );
+          setTimeout(()=> this.setState({ pieces: endKingPieces, turn: 'p1' },
+                                        ()=> nextTurnOver && this.checkEndGame()), 1600 );
+        }
+      }
+    }
+    
+    
+    // if cp jumped and didn't finish turn, delay -> recurse.
+  }
+
+```
+
+```js
+
+//... onClickCell = (c, r)=> {
+    if( this.props.mode === 'cp' && this.state.turn !== 'p1' ) return;
+```
+
+
+App
+```js
+  cpMove = (pieces, player='p2')=>{
+    const otherPlayer = { p1: 'p2', p2: 'p1' }[player];
+    
+    // generate list of valid moves
+
+    const allMoves = calculateAllTurnOptions(pieces, player);
+
+    if(!allMoves.length) return; // game is over already
+
+    // for each turn option, determine the value at the end, pick the biggest value
+    // at each possible leaf node (game state), calculate a game state value
+    ///// gsv = #p1s + 3*#p1-kings + #edgeP1s - that for p2
+
+    const moveResults = allMoves.map(moves =>
+      moves.reduce((p, move, mi)=> calculatePiecesAfterMove(p, [
+        ...moves.slice(mi),
+        mi === moves.length -1 ? moves[mi] : undefined,
+      ]).pieces, pieces)
+    );
+    
+    const moveValues = moveResults.map(resultPieces => {
+      const playerPieces = resultPieces.reduce((p, col)=>
+        p+ col.filter(piece => (piece && piece === player)).length, 0);
+      
+      const playerKings = resultPieces.reduce((p, col)=>
+        p+ col.filter(piece => (piece && piece === player+'king')).length, 0);
+      
+      const playerEdges = resultPieces.reduce((p, col, ci)=> p+ (ci > 0 && ci < resultPieces.length-1) ? (
+        0 ) : ( col.filter(piece=> (piece && piece.includes(player))).length ), 0);
+
+
+      
+      const otherPieces = resultPieces.reduce((p, col)=>
+        p+ col.filter(piece=> (piece && piece === otherPlayer && !piece.includes('jumped'))).length, 0);
+      
+      const otherKings = resultPieces.reduce((p, col)=>
+        p+ col.filter(piece=> (piece && piece === otherPlayer+'-king' && !piece.includes('jumped'))).length, 0);
+      
+      const otherEdges = resultPieces.reduce((p, col, ci)=> p+ (ci > 0 && ci < resultPieces.length-1) ? (
+        0 ) : ( col.filter(piece=> (piece && piece.includes(otherPlayer) && !piece.includes('jumped'))).length ), 0);
+
+      
+      return playerPieces + 3*playerKings + playerEdges - otherPieces - 3*otherKings - otherEdges;
+    });
+    
+    const bestMove = moveValues.reduce((moveIndex, result, ci)=> (result > moveValues[moveIndex] ? ci : moveIndex), 0);
+    
+    //return allMoves[ Math.floor(allMoves.length * Math.random()) ]; // pick a move randomly
+    
+    return allMoves[ bestMove ]; // pick the best move by the formula
+  }
+```

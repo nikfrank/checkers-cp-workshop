@@ -43,7 +43,8 @@ let's clone the project and run the existing checkers game
   - pick the best one
   - psudeocode minimax algorithm (homework!)
 - test game with enzyme
-
+  - mount the Board, test the HTML
+  - test the Board for onClick accuracy
 
 
 
@@ -60,7 +61,7 @@ import { calculateAllTurnOptions, calculatePiecesAfterMove } from './util';
 //...
 ```
 
-we see right away which utility functions we'll be using. Let's take a look at the function signatures for those in <sub>./src/util.js</sub> to understand them a bit more
+we see right away which utility functions we'll be using. Let's take a look at the [function signatures](https://www.google.com/search?q=function+signature) for those in <sub>./src/util.js</sub> to understand them a bit more
 
 <sub>./src/util.js</sub>
 ```js
@@ -75,7 +76,7 @@ export const calculateAllTurnOptions = (pieces, player)=> {
 
 `calculateAllTurnOptions` takes a boardful of pieces, which player we're asking about, and returns a variable called `moves`
 
-so we can understand that this function will give us a list of valid moves & multi-jump move options for our computer player to select between.
+so now we understand that this function will give us a list of valid moves & multi-jump move options for our computer player to select between.
 
 (( once tests are written for this function, review test output [from, to], [from, to, ...nextTo] ))
 
@@ -93,7 +94,7 @@ export const calculatePiecesAfterMove = (inputPieces, [moveFrom, moveTo])=>{
 
 `calculatePiecesAfterMove` takes a boardful of pieces, and an array destructured to variables called `moveFrom` and `moveTo` and returns an object with `{ jumping, turnOver, pieces}`
 
-`moveFrom` and `moveTo` we can see from these lines of code in the function
+to understand `moveFrom` and `moveTo` we can look at these lines of code in the function
 
 ```js
   const prevClickedSquare = pieces[ moveTo[0] ][ moveTo[1] ];
@@ -102,10 +103,13 @@ export const calculatePiecesAfterMove = (inputPieces, [moveFrom, moveTo])=>{
 
 ```
 
-must contain a column and row value like `[col, row]`, in order to read out of `pieces` correctly.
+each must contain a column and row value like `[col, row]`, in order to read out of `pieces` correctly.
 
+
+(( imagine `moveFrom = [0, 3]` and `moveTo = [1, 4]`, then we can read out the `piece` correctly with `pieces[ 1 ][ 4 ]` ))
 
 we can figure from the names of the output variables that we have determined if the move ends with the player still jumping, if the move is over, and the board of pieces after the move.
+
 
 
 
@@ -579,14 +583,101 @@ Enzyme.configure({ adapter: new Adapter() });
 ```
 
 
-#### test the Board for onClick accuracy
+#### mount the Board, test the HTML
 
 [the introduction documentation for enzyme](https://airbnb.io/enzyme/) has some pretty good getting started guide examples
 
-what we should do here to start is `mount` a `Board` Component
+what we should do here to start is `mount` a `Board` Component, then see what html we can get
+
+<sub>./src/App.test.js</sub>
+```js
+it('mounts to enzyme to render a Board', ()=>{
+
+  const fakePieces = [[ 'p1', null ], [null, 'p2']];
+  const fakeMoves = [[ false, false ], [ false, false ] ];
+
+  const p = mount(<Board pieces={fakePieces}
+                         moves={fakeMoves} />);
+
+  console.log( p.html() );
+
+  expect( p.find('.Board') ).toHaveLength( 1 );
+});
+```
+
+now we can run `$ npm run test` or `$ yarn test` if you're a cool kid
+
+this will have [jest](https://jestjs.io/) run our test file(s)
+
+jest's docs are great (thanks dan abramov), and should explain the basics of the `it` and `expect` functions
+
+
+#### test the Board for onClick accuracy
+
+so let's test some of the behaviour of our gameboard!
+
+we want to make sure that the `onClick` handler is responding with the correct coordinates when we click on a `BoardCell`
+
+to do this we'll do the following:
+
+- make a spy function
+- pass it to the `Board` for its `onClick` prop
+- simulate clicking on a `.BoardCell`
+- use `expect` to test the coordinates the `onClick` was called with
+
+
+<sub>./src/App.test.js</sub>
+```js
+it('mounts to enzyme and clicks a cell', ()=>{
+
+  const clickSpy = jest.fn();
+  
+  
+  const fakePieces = [[ 'p1', null ], [null, 'p2']];
+  const fakeMoves = [[ false, false ], [ false, false ] ];
+
+  
+  const p = mount(<Board pieces={fakePieces}
+                         moves={fakeMoves}
+                         onClick={clickSpy}/>);
+
+
+  p.find('div.BoardCell').first().simulate('click');
+
+  expect( clickSpy.mock.calls ).toHaveLength( 1 );
+});
+```
+
+this tests that we've called the `onClick` spy, so let's check the params it was called with
+
+<sub>./src/App.test.js</sub>
+```js
+//...
+
+  expect( clickSpy.mock.calls[0][0] ).toEqual( 0 );
+  expect( clickSpy.mock.calls[0][1] ).toEqual( 0 );
+});
+```
+
+here, because we clicked the `.first()` `div` from the selector, we should expect the coordinates to be [0, 0]
+
+just for fun (and certainty) let's click again and make sure clicking somewhere else also works
+
+
+<sub>./src/App.test.js</sub>
+```js
+//...
+
+  p.find('div.BoardCell')
+
+  expect( clickSpy.mock.calls[0][0] ).toEqual( 0 );
+  expect( clickSpy.mock.calls[0][1] ).toEqual( 0 );
+});
+```
 
 
 
+- run the testing coverage
 - read utility functions, refactor them for legibility
 - test the entire 2p local flow
 - move the computer player logic to "network" layer
@@ -642,125 +733,3 @@ what we should do here to start is `mount` a `Board` Component
 
 
 
-
-###
-###
-###
-
-code blocks
-
-```js
-  componentDidMount(){
-    (Math.random() > 0.5) && setTimeout(()=> this.setState({ turn: 'p2' }), 100);
-  }
-  
-  componentDidUpdate(prevProps, prevState){
-    if(
-      ( this.props.mode === 'cp' && this.state.turn === 'p2' ) &&
-      ( prevState.turn !== 'p2' )
-    ) this.makeCPmove();
-  }
-
-  makeCPmove = ()=>{
-    const cpMove = this.props.cpMove(this.state.pieces);
-
-    if(!cpMove) return;
-    
-    const { turnOver, pieces } = calculatePiecesAfterMove(this.state.pieces, cpMove);
-
-    // if turn is over, delay 500ms -> setState({ turn: 'p1', pieces: nextPieces })
-    setTimeout(()=> this.setState({ pieces, turn: turnOver? 'p1' : 'p2' }, ()=> turnOver && this.checkEndGame()), 500);
-
-    if(!turnOver) {
-      const { turnOver: nextTurnOver, pieces: nextPieces } = calculatePiecesAfterMove(
-        pieces,
-        cpMove.slice(1)
-      );
-
-      setTimeout(()=> this.setState({ pieces: nextPieces, turn: nextTurnOver? 'p1' : 'p2' },
-                                    ()=> nextTurnOver && this.checkEndGame()), 1100);
-
-      if( !nextTurnOver ){
-        const { pieces: lastPieces, turnOver: kingNotStillJumping } = calculatePiecesAfterMove(
-          nextPieces,
-          cpMove.slice(2)
-        );
-
-        if( kingNotStillJumping )
-          setTimeout(()=> this.setState({ pieces: lastPieces, turn: 'p1' },
-                                        ()=> nextTurnOver && this.checkEndGame()), 1600);
-        else {
-          const { pieces: endKingPieces } = calculatePiecesAfterMove( lastPieces, [cpMove[2], cpMove[2]] );
-          setTimeout(()=> this.setState({ pieces: endKingPieces, turn: 'p1' },
-                                        ()=> nextTurnOver && this.checkEndGame()), 1600 );
-        }
-      }
-    }
-    
-    
-    // if cp jumped and didn't finish turn, delay -> recurse.
-  }
-
-```
-
-```js
-
-//... onClickCell = (c, r)=> {
-    if( this.props.mode === 'cp' && this.state.turn !== 'p1' ) return;
-```
-
-
-App
-```js
-  cpMove = (pieces, player='p2')=>{
-    const otherPlayer = { p1: 'p2', p2: 'p1' }[player];
-    
-    // generate list of valid moves
-
-    const allMoves = calculateAllTurnOptions(pieces, player);
-
-    if(!allMoves.length) return; // game is over already
-
-    // for each turn option, determine the value at the end, pick the biggest value
-    // at each possible leaf node (game state), calculate a game state value
-    ///// gsv = #p1s + 3*#p1-kings + #edgeP1s - that for p2
-
-    const moveResults = allMoves.map(moves =>
-      moves.reduce((p, move, mi)=> calculatePiecesAfterMove(p, [
-        ...moves.slice(mi),
-        mi === moves.length -1 ? moves[mi] : undefined,
-      ]).pieces, pieces)
-    );
-    
-    const moveValues = moveResults.map(resultPieces => {
-      const playerPieces = resultPieces.reduce((p, col)=>
-        p+ col.filter(piece => (piece && piece === player)).length, 0);
-      
-      const playerKings = resultPieces.reduce((p, col)=>
-        p+ col.filter(piece => (piece && piece === player+'king')).length, 0);
-      
-      const playerEdges = resultPieces.reduce((p, col, ci)=> p+ (ci > 0 && ci < resultPieces.length-1) ? (
-        0 ) : ( col.filter(piece=> (piece && piece.includes(player))).length ), 0);
-
-
-      
-      const otherPieces = resultPieces.reduce((p, col)=>
-        p+ col.filter(piece=> (piece && piece === otherPlayer && !piece.includes('jumped'))).length, 0);
-      
-      const otherKings = resultPieces.reduce((p, col)=>
-        p+ col.filter(piece=> (piece && piece === otherPlayer+'-king' && !piece.includes('jumped'))).length, 0);
-      
-      const otherEdges = resultPieces.reduce((p, col, ci)=> p+ (ci > 0 && ci < resultPieces.length-1) ? (
-        0 ) : ( col.filter(piece=> (piece && piece.includes(otherPlayer) && !piece.includes('jumped'))).length ), 0);
-
-      
-      return playerPieces + 3*playerKings + playerEdges - otherPieces - 3*otherKings - otherEdges;
-    });
-    
-    const bestMove = moveValues.reduce((moveIndex, result, ci)=> (result > moveValues[moveIndex] ? ci : moveIndex), 0);
-    
-    //return allMoves[ Math.floor(allMoves.length * Math.random()) ]; // pick a move randomly
-    
-    return allMoves[ bestMove ]; // pick the best move by the formula
-  }
-```
