@@ -592,7 +592,7 @@ what we should do here to start is `mount` a `Board` Component, then see what ht
 ```js
 it('mounts to enzyme to render a Board', ()=>{
 
-  const fakePieces = [[ 'p1', null ], [null, 'p2']];
+  const fakePieces = [[ 'p1', null ], [ null, 'p2' ]];
   const fakeMoves = [[ false, false ], [ false, false ] ];
 
   const p = mount(<Board pieces={fakePieces}
@@ -632,7 +632,7 @@ it('mounts to enzyme and clicks a cell', ()=>{
   const clickSpy = jest.fn();
   
   
-  const fakePieces = [[ 'p1', null ], [null, 'p2']];
+  const fakePieces = [[ 'p1', null ], [ null, 'p2' ]];
   const fakeMoves = [[ false, false ], [ false, false ] ];
 
   
