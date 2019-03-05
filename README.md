@@ -668,16 +668,31 @@ just for fun (and certainty) let's click again and make sure clicking somewhere 
 ```js
 //...
 
-  p.find('div.BoardCell')
+  p.find('div.BoardCell').at(2).simulate('click');
 
-  expect( clickSpy.mock.calls[0][0] ).toEqual( 0 );
-  expect( clickSpy.mock.calls[0][1] ).toEqual( 0 );
+  expect( clickSpy.mock.calls ).toHaveLength( 2 );
+  expect( clickSpy.mock.calls[1][0] ).toEqual( 0 );
+  expect( clickSpy.mock.calls[1][1] ).toEqual( 1 );
 });
 ```
 
+now our test is really doing something!
 
 
-- run the testing coverage
+#### run the testing coverage
+
+we might have someone ask us "what is this test testing?"
+
+we can answer that question with our code coverage report
+
+code coverage will tell us which lines of code were run during our test
+
+all we need to do is run
+
+`$ npm run test -- --coverage`
+
+
+
 - read utility functions, refactor them for legibility
 - test the entire 2p local flow
 - move the computer player logic to "network" layer
