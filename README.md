@@ -2,6 +2,14 @@ this is a course on how to build a checkers game using reactJS
 
 We're starting today from a 2p-local game, out goal is to add a basic computer player
 
+## getting started
+
+`$ cd ~/code`
+`$ git clone https://github.com/nikfrank/checkers-cp-workshop`
+`$ cd checkers-cp-workshop`
+`$ yarn`
+`$ npm start`
+
 
 ## agenda
 
@@ -565,24 +573,25 @@ Enzyme.configure({ adapter: new Adapter() });
 ```
 
 
-- read utility functions, refactor them for legibility
-
-
-
 #### test the Board for onClick accuracy
 
-#### test the entire 2p local flow
+[the introduction documentation for enzyme](https://airbnb.io/enzyme/) has some pretty good getting started guide examples
 
-#### move the computer player logic to "network" layer
-  - ie refactor chooseCpMove from makeCpMove
-  
-#### mock the network layer and test the cp mode
+what we should do here to start is `mount` a `Board` Component
+
+
+
+- read utility functions, refactor them for legibility
+- test the entire 2p local flow
+- move the computer player logic to "network" layer
+  - ie refactor chooseCpMove from makeCpMove 
+- mock the network layer and test the cp mode
 
 ---
 ---
 
 
-#### integrate to the game server (large next section of the course)
+- integrate to the game server (large next section of the course)
 
 
 
